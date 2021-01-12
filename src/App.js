@@ -7,57 +7,71 @@ import Filter from "./Filter/Filter";
 import ContactList from "./ContactList/ContactList";
 
 export default function App() {
-  const [contacts, setContacts] = useState([
+  // const [contacts, setContacts] = useState([
+  //   { id: "id-1", name: "Rosie Simpson", number: "459-12-56" },
+  //   { id: "id-2", name: "Hermione Kline", number: "443-89-12" },
+  //   { id: "id-3", name: "Eden Clements", number: "645-17-79" },
+  //   { id: "id-4", name: "Annie Copeland", number: "227-91-26" },
+  // ]);
+  const defaultContacts = [
     { id: "id-1", name: "Rosie Simpson", number: "459-12-56" },
     { id: "id-2", name: "Hermione Kline", number: "443-89-12" },
     { id: "id-3", name: "Eden Clements", number: "645-17-79" },
     { id: "id-4", name: "Annie Copeland", number: "227-91-26" },
-  ]);
+  ];
 
-  console.log(contacts);
-  console.log(typeof contacts);
+  const [contacts, setContacts] = useState(() =>
+    JSON.parse(window.localStorage.getItem("contacts") ?? defaultContacts)
+  );
+
   const [filter, setFilter] = useState("");
 
+  useEffect(() => {
+    console.log("запускается UseEffect");
+    window.localStorage.setItem("contacts", JSON.stringify(contacts));
+  }, [contacts]);
+
+  //   componentDidMount() {
+  //   console.log('Component did mount');
+  //   const contacts = localStorage.getItem('contacts');
+  //   const parsedContacts = JSON.parse(contacts);
+  //   console.log(contacts);
+  //   console.log(parsedContacts);
+  //   if (parsedContacts) {
+  //     this.setState({ contacts: parsedContacts });
+  //   }
+  // }
+
+  // componentDidUpdate(prevProps, prevState) {
+  //   console.log('Component did update');
+  //   if (this.state.contacts !== prevState.contact) {
+  //     localStorage.setItem('contacts', JSON.stringify(this.state.contacts));
+  //   }
+  // }
+
   const onAddContact = (name, number) => {
-    // console.log(name, number);
-    setContacts((prevState) => {
-      console.log(prevState);
-      return {
-        contacts: [...prevState, { id: uuidv4(), name, number }],
-      };
-    });
-    console.log(contacts);
+    setContacts((prevState) => [...prevState, { id: uuidv4(), name, number }]);
   };
 
   const onFilter = (evt) => {
     const { value } = evt.target;
     setFilter(value);
-    console.log(filter);
   };
 
   const getVisibleContacts = () => {
-    console.log(contacts);
     const normalizedFilter = filter.toLowerCase();
 
-    return contacts.filter(
-      (contact) => contact.name.toLowerCase().includes(normalizedFilter)
-      // console.log(contact.name.toLowerCase().includes(normalizedFilter))
+    return contacts.filter((contact) =>
+      contact.name.toLowerCase().includes(normalizedFilter)
     );
   };
 
   const deleteContact = (evt) => {
-    console.log(evt.target.id);
-    this.setState((prevState) => ({
-      contacts: prevState.contacts.filter(
-        (contact) => contact.id !== evt.target.id
-      ),
-    }));
+    setContacts((prevState) => [
+      ...prevState.filter((contact) => contact.id !== evt.target.id),
+    ]);
   };
 
-  // render() {
-  //   const { filter, contacts } = this.state;
-  //   // const filteredContacts = this.getVisibleContacts();
-  //   // console.log(filteredContacts);
   return (
     <div className={s.container}>
       <h1>Phonebook</h1>
@@ -71,7 +85,6 @@ export default function App() {
     </div>
   );
 }
-// }
 
 // import { Component } from "react";
 // import { v4 as uuidv4 } from "uuid";

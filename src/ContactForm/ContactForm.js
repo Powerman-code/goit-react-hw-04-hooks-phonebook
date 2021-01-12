@@ -4,9 +4,13 @@ import { useState, useEffect } from "react";
 import s from "./ContactForm.module.css";
 
 export default function ContactForm({ contacts, onAddContact }) {
-  console.log(typeof contacts);
   const [name, setName] = useState("");
   const [number, setNumber] = useState("");
+
+  // useEffect(() => {
+  //   console.log("запускается UseEffect");
+  //   window.localStorage.setItem("name", JSON.stringify(name));
+  // }, [contacts]);
 
   const handleSubmit = (evt) => {
     evt.preventDefault();
@@ -31,8 +35,6 @@ export default function ContactForm({ contacts, onAddContact }) {
   };
 
   const validateData = () => {
-    console.log(name, number);
-    console.log(contacts);
     const normalizedFilter = name.toLowerCase();
     const msg = contacts.find(
       (contact) => contact.name.toLowerCase() === normalizedFilter
